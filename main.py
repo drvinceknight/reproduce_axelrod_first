@@ -106,6 +106,6 @@ def summarise():
 if __name__ == "__main__":
     import sys
     if "--summarise" in sys.argv:
-        summaries()
+        summarise()
     else:
         main()
