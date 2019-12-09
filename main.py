@@ -75,10 +75,10 @@ def main():
     """
     players = get_players()
     number_of_players = len(players)
-    filename = "seed_search.csv"
+    filename = "main.csv"
 
     try:
-        seed = pd.read_csv("seed_search.csv")["seed"].max() + 1
+        seed = pd.read_csv("main.csv")["seed"].max() + 1
     except FileNotFoundError:
         seed = 0
         write_data(
@@ -98,14 +98,14 @@ def summarise():
     Analyse and display the current data collection
     """
 
-    df = pd.read_csv("seed_search.csv")
+    df = pd.read_csv("main.csv")
     print(df.describe())
     print("All winners:")
     print(collections.Counter(df["winner"]))
 
 if __name__ == "__main__":
     import sys
-    if "summarise" in sys.argv:
+    if "--summarise" in sys.argv:
         summaries()
     else:
         main()
