@@ -15,7 +15,7 @@ Activate the environment:
 
 This installs the particular Axelrod version needed from the git hash:
 
-    $ pip install git+git://github.com:Axelrod-Python/Axelrod.git@36e82a24ec50dc5b4015d07e443a9eb3fc900272
+    $ pip install git+git://github.com/Axelrod-Python/Axelrod.git@36e82a24ec50dc5b4015d07e443a9eb3fc900272
 
 ## Run the experiments
 
