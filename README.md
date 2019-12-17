@@ -13,14 +13,10 @@ Activate the environment:
 
     $ conda activate reproduce_axelrod_first
 
-This installs the particular Axelrod version needed from the git hash:
-
-    $ pip install git+git://github.com/Axelrod-Python/Axelrod.git@36e82a24ec50dc5b4015d07e443a9eb3fc900272
-
 ## Run the experiments
 
     $ python main.py
 
 ## See a quick summary of the data
 
-    $ python main.py --summarise
+    $ python main.py -s
