@@ -7,3 +7,5 @@ dependencies:
   - numpy
   - scipy
   - dask
+  - pip:
+      - axelrod==4.8.0
