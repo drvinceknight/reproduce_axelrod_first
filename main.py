@@ -1,9 +1,10 @@
+import collections
 import csv
 
+import numpy as np
 import pandas as pd
+import scipy.stats
 
-import collections
-import pandas as pd
 import axelrod as axl
 
 
@@ -21,11 +22,15 @@ def obtain_ranks(players, seed=0):
     """
     Run the tournament with the same parameters as reported in the original work
     (5 repetitions and 200 turns) and return the ranks.
+
+    scipy.stats.rankdata returns a numpy array of type floats. We here convert
+    that to int to match with the ranks from the paper (there were no ties)
     """
     axl.seed(seed)
     tournament = axl.Tournament(players=players, turns=200, repetitions=5)
-    ranking = tournament.play(progress_bar=False).ranking
-    return [ranking.index(i) for i, _ in enumerate(ranking)]
+    payoff_matrix = np.array(tournament.play(progress_bar=False).payoff_matrix)
+    mean_payoffs = payoff_matrix.mean(axis=1)
+    return scipy.stats.rankdata(-payoff_matrix.mean(axis=1)).astype(int)
 
 
 def count_matches(ranks):
@@ -33,7 +38,7 @@ def count_matches(ranks):
     Count the number of ranks that match between the reported and reproduced
     tournaments.
     """
-    return sum(reported == reproduced for reported, reproduced in enumerate(ranks))
+    return sum(reported + 1 == reproduced for reported, reproduced in enumerate(ranks))
 
 
 def write_data(seed, number, ranks, filename, mode="a"):
@@ -42,7 +47,7 @@ def write_data(seed, number, ranks, filename, mode="a"):
     """
     with open(filename, mode) as f:
         writer = csv.writer(f)
-        writer.writerow([seed, number] + ranks)
+        writer.writerow([seed, number] + list(ranks))
 
 
 def check_seed(seed, players, filename):
@@ -52,8 +57,8 @@ def check_seed(seed, players, filename):
     ranks = obtain_ranks(players=players, seed=seed)
 
     # Check reproducibility
-    assert ranks == obtain_ranks(
-        players=players, seed=seed
+    assert np.array_equal(
+        ranks, obtain_ranks(players=players, seed=seed)
     ), f"Failed to reproduce for seed={seed}"
 
     number_of_matches = count_matches(ranks=ranks)
@@ -101,7 +106,7 @@ def summarise():
     print(df[["seed", "number"]].describe())
 
     print("Number of wins:")
-    print((df[player_names] == 0).sum(axis=0))
+    print((df[player_names] == 1).sum(axis=0))
 
 
 if __name__ == "__main__":
